@@ -5,8 +5,13 @@ version := "1.0.0"
 // Scala 3 (choisir une vraie version existante)
 scalaVersion := "2.13.18"
 
-// SET JDK to 17
-javacOptions ++= Seq("-source", "17", "-target", "17")
+fork := true
+
+// Aligner version JDK sur 17
+javacOptions ++= Seq(
+  "-source", "17", "-target", "17",
+  "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+)
 
 // IMPORTANT : compatibilité avec libs Scala 2.13
 scalacOptions ++= Seq(
@@ -14,8 +19,8 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-sql" % "3.5.0",
-  "org.apache.spark" %% "spark-core" % "3.5.0",
+  "org.apache.spark" %% "spark-sql" % "3.5.1",
+  "org.apache.spark" %% "spark-core" % "3.5.1",
   "io.delta" %% "delta-spark" % "3.1.0",
   "org.apache.httpcomponents.client5" % "httpclient5" % "5.3.1"
 )

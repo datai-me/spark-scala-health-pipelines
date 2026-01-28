@@ -14,7 +14,8 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-sql" % "3.5.0" % "provided",
+  "org.apache.spark" %% "spark-sql" % "3.5.0",
+  "org.apache.spark" %% "spark-core" % "3.5.0",
   "io.delta" %% "delta-spark" % "3.1.0",
   "org.apache.httpcomponents.client5" % "httpclient5" % "5.3.1"
 )

@@ -26,7 +26,7 @@ object EpidemicPipelineApp {
   def run(): Unit = {
 
     // 1. Initialisation Spark
-    val spark = SparkSessionBuilder.build("Epidemic-BigData-Pipeline")
+    val spark = SparkSessionBuilder.build("spark-scala-health-pipelines")
 
     try {
       // 2. INGESTION – BRONZE

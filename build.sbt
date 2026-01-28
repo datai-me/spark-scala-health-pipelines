@@ -3,7 +3,7 @@ name := "spark-scala-health-pipelines"
 version := "1.0.0"
 
 // Scala 3 (choisir une vraie version existante)
-scalaVersion := "2.13.12"
+scalaVersion := "2.13.18"
 
 // SET JDK to 17
 javacOptions ++= Seq("-source", "17", "-target", "17")

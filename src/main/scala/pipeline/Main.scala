@@ -15,14 +15,14 @@ object Main {
   def main(args: Array[String]): Unit = {
 
     println("===================================")
-    println(" Epidemic Big Data Pipeline START ")
+    println(" Epidemic Health Pipeline START ")
     println("===================================")
 
     // Appel explicite du pipeline métier
     EpidemicPipelineApp.run()
 
     println("===================================")
-    println(" Epidemic Big Data Pipeline END ")
+    println(" Epidemic Big Health Pipeline END ")
     println("===================================")
   }
 }

@@ -14,11 +14,15 @@ import sql.EpidemicSqlRunner
 object EpidemicPipelineApp {
 
   def run(): Unit = {
+  
+	println(">>> Epidemic Pipeline started")
 
     // 1. Chargement des données depuis l’API publique
     val dataset = EpidemicSparkLoader.load()
 
     // 2. Exécution des requêtes Spark SQL + affichage console
     EpidemicSqlRunner.run(dataset)
+	
+	println(">>> Epidemic Pipeline started")
   }
 }

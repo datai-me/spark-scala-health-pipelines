@@ -11,10 +11,8 @@ object SparkSessionProvider {
   lazy val spark: SparkSession =
     SparkSession.builder()
       .appName("Epidemic Spark SQL Pipeline")
-      .master("local[*]")
-      //.config("spark.resources.discoveryPlugin", "") // pas recommandé (bricolage)
+      .master("local[*]") // à retirer en production
       //.config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-      //.config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
-	  .config("spark.executor.extraJavaOptions", "--add-exports java.base/sun.nio.ch=ALL-UNNAMED")
-    .getOrCreate()
+      //.config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")	  
+      .getOrCreate()
 }

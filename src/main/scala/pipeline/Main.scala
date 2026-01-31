@@ -4,6 +4,8 @@
 // CAS    : Surveillance épidémiologique à partir d'une API publique
 // =============================================================
 
+import utils.VersionsInfo
+
 package pipeline
 
 /**
@@ -14,15 +16,15 @@ object Main {
 
   def main(args: Array[String]): Unit = {
    
-    // Affiche la version Java utilisée
-    print("Java Version: ")
-    print(System.getProperty("java.version"))   
     println("===================================")
     println(" Epidemic Health Pipeline START ")
     println("===================================")
-
-    // Appel explicite du pipeline métier
-    EpidemicPipelineApp.run()
+	
+	 // 🔹 Affichage des versions AU DÉMARRAGE
+    VersionsInfo.printVersions(spark)
+	
+    // 🔹 Lancement du pipeline principal
+    EpidemicPipelineApp.run(spark)
 
     println("===================================")
     println(" Epidemic Big Health Pipeline END ")

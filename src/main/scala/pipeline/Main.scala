@@ -7,12 +7,18 @@
 package pipeline
 
 import org.apache.spark.sql.SparkSession
+import config.ConfigLoader
 import utils.VersionsInfo
 import pipeline.EpidemicPipelineApp
+import org.apache.logging.log4j.LogManager
 
 object Main {
 
+ private val logger = LogManager.getLogger(Main.getClass)
+
   def main(args: Array[String]): Unit = {
+
+    logger.info("Starting Epidemic Big Data Pipeline")
 
     // 🔹 Création UNIQUE du SparkSession
     val spark = SparkSession.builder()
@@ -30,5 +36,6 @@ object Main {
 
     // 🔹 Arrêt propre
     spark.stop()
+    logger.info("Pipeline stopped successfully")
   }
 }

@@ -13,6 +13,9 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "com.typesafe" % "config" % "1.4.3",
+  "org.apache.logging.log4j" % "log4j-api" % "2.23.1",
+  "org.apache.logging.log4j" % "log4j-core" % "2.23.1",
   "org.apache.spark" %% "spark-sql" % "3.5.8",
   "org.apache.spark" %% "spark-core" % "3.5.8",
   "com.lihaoyi" %% "requests" % "0.8.0",

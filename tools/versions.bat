@@ -8,7 +8,7 @@ java -version
 echo.
 
 echo SBT:
-sbt sbtVersion
+sbt --version
 echo.
 
 echo Scala:

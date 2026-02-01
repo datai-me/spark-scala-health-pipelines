@@ -6,7 +6,7 @@ Write-Host "`nJava:"
 java -version
 
 Write-Host "`nSBT:"
-sbt sbtVersion
+sbt --version
 
 Write-Host "`nScala:"
 scala -version

@@ -6,32 +6,30 @@
 package pipeline
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import config.ConfigLoader
+import org.apache.logging.log4j.LogManager
 
 object EpidemicPipelineApp {
 
-  /**
-   * Point d’entrée du pipeline métier
-   * SparkSession est injecté depuis Main
-   */
+  private val logger = LogManager.getLogger(EpidemicPipelineApp.getClass)
+
   def run(spark: SparkSession): Unit = {
 
-    println(">>> Epidemic Pipeline started")
+    logger.info("Epidemic pipeline started")
 
-    val epidemicDF = loadSampleData(spark)
-    epidemicDF.show(false)
+    val df = loadEpidemicData(spark)
+    df.show(false)
 
-    println(">>> Epidemic Pipeline finished")
+    logger.info("Epidemic pipeline finished")
   }
 
-  /**
-   * Exemple de chargement de données
-   */
-  private def loadSampleData(spark: SparkSession): DataFrame = {
-    import spark.implicits._
+  private def loadEpidemicData(spark: SparkSession): DataFrame = {
 
-    Seq(
-      ("Madagascar", "COVID-19", 120000, "2024-12-31"),
-      ("Kenya", "Cholera", 3400, "2024-11-15")
-    ).toDF("country", "disease", "cases", "report_date")
+    logger.info(s"Reading data from API: ${ConfigLoader.epidemicApiUrl}")
+
+    spark.read
+      .format("json")
+      .option("multiline", "true")
+      .load(ConfigLoader.epidemicApiUrl)
   }
 }

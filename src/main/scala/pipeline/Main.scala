@@ -1,37 +1,32 @@
 // =============================================================
 // PROJET : EPIDEMIC BIG DATA PIPELINE
-// STACK  : Scala 2.13 | Spark 4.x | Delta Lake
+// STACK  : Scala 2.13 | Spark 3.x | Delta Lake
 // CAS    : Surveillance épidémiologique à partir d'une API publique
 // =============================================================
 
-import utils.VersionsInfo
-
 package pipeline
 
-/**
- * Point d'entrée JVM du projet.
- * C'est CE fichier qui est exécuté par sbt / spark-submit.
- */
+import org.apache.spark.sql.SparkSession
+import utils.VersionsInfo
+import pipeline.EpidemicPipelineApp
+
 object Main {
 
   def main(args: Array[String]): Unit = {
-   
-    println("===================================")
-    println(" Epidemic Health Pipeline START ")
-    println("===================================")
-	
-	 // 🔹 Affichage des versions AU DÉMARRAGE
+
+    // 🔹 Création UNIQUE du SparkSession
+    val spark = SparkSession.builder()
+      .appName("Epidemic Big Data Pipeline")
+      .master("local[*]") // à retirer en production
+      .getOrCreate()
+
+    // 🔹 Affichage des versions AU DÉMARRAGE
     VersionsInfo.printVersions(spark)
-	
-    // 🔹 Lancement du pipeline principal
+
+    // 🔹 Exécution du pipeline
     EpidemicPipelineApp.run(spark)
 
-    println("===================================")
-    println(" Epidemic Big Health Pipeline END ")
-    println("===================================")
+    // 🔹 Arrêt propre
+    spark.stop()
   }
 }
-
-// =============================================================
-// FIN DU PROJET – PIPELINE ÉPIDÉMIOLOGIQUE COMPLET
-// =============================================================

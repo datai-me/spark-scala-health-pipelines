@@ -17,7 +17,9 @@ object Main {
     // 🔹 Création UNIQUE du SparkSession
     val spark = SparkSession.builder()
       .appName("Epidemic Big Data Pipeline")
-      .master("local[*]") // à retirer en production
+      .master("local[*]") // utilise tous les cœurs disponibles, à retirer en production
+      //.config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+      //.config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")	  
       .getOrCreate()
 
     // 🔹 Affichage des versions AU DÉMARRAGE

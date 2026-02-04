@@ -8,34 +8,28 @@ package pipeline
 
 import org.apache.spark.sql.SparkSession
 import config.ConfigLoader
-import utils.VersionsInfo
-import pipeline.EpidemicPipelineApp
 import org.apache.logging.log4j.LogManager
 
 object Main {
 
- private val logger = LogManager.getLogger(Main.getClass)
+  private val logger = LogManager.getLogger(Main.getClass)
 
   def main(args: Array[String]): Unit = {
-
-    logger.info("Starting Epidemic Big Data Pipeline")
-
-    // 🔹 Création UNIQUE du SparkSession
+    logger.info("Démarrage Spark Session")
     val spark = SparkSession.builder()
       .appName(ConfigLoader.appName)
-      .master(ConfigLoader.master) // utilise tous les cœurs disponibles, à retirer en production
-      //.config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-      //.config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")	  
+      .master(ConfigLoader.master)
       .getOrCreate()
 
-    // 🔹 Affichage des versions AU DÉMARRAGE
-    VersionsInfo.printVersions(spark)
+    // Affichage des versions Java/Scala/Spark/Hadoop
+    println(s"Java: ${System.getProperty("java.version")}")
+    println(s"Scala: ${util.Properties.versionString}")
+    println(s"Spark: ${spark.version}")
+    println(s"Hadoop: ${org.apache.hadoop.util.VersionInfo.getVersion}")
 
-    // 🔹 Exécution du pipeline
+    // Lancer le pipeline
     EpidemicPipelineApp.run(spark)
 
-    // 🔹 Arrêt propre
     spark.stop()
-    logger.info("Pipeline stopped successfully")
   }
 }

@@ -24,7 +24,7 @@ object EpidemicPipelineApp {
   }
 
   private def loadEpidemicData(spark: SparkSession): DataFrame = {
-    println("Here")
+    println(config.ConfigLoader.epidemicApiUrl)
     logger.info(s"Reading data from API: ${ConfigLoader.epidemicApiUrl}")
 
     spark.read

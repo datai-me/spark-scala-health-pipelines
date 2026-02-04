@@ -1,3 +1,19 @@
+error id: file:///C:/Users/user/Documents/GitHub/spark-scala-health-pipelines/src/main/scala/pipeline/Main.scala:info.
+file:///C:/Users/user/Documents/GitHub/spark-scala-health-pipelines/src/main/scala/pipeline/Main.scala
+empty definition using pc, found symbol in pc: info.
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -logger/info.
+	 -logger/info#
+	 -logger/info().
+	 -scala/Predef.logger.info.
+	 -scala/Predef.logger.info#
+	 -scala/Predef.logger.info().
+offset: 630
+uri: file:///C:/Users/user/Documents/GitHub/spark-scala-health-pipelines/src/main/scala/pipeline/Main.scala
+text:
+```scala
 // =============================================================
 // PROJET : EPIDEMIC BIG DATA PIPELINE
 // STACK  : Scala 2.13 | Spark 3.x | Delta Lake
@@ -18,12 +34,12 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
-    logger.info("Starting Epidemic Big Data Pipeline")
+    logger.inf@@o("Starting Epidemic Big Data Pipeline")
 
     // 🔹 Création UNIQUE du SparkSession
     val spark = SparkSession.builder()
       .appName(ConfigLoader.appName)
-      .master(ConfigLoader.master) // utilise tous les cœurs disponibles, à retirer en production
+      .master("local[*]") // utilise tous les cœurs disponibles, à retirer en production
       //.config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
       //.config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")	  
       .getOrCreate()
@@ -39,3 +55,10 @@ object Main {
     logger.info("Pipeline stopped successfully")
   }
 }
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: info.

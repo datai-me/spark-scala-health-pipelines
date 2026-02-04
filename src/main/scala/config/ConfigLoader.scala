@@ -4,25 +4,33 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 object ConfigLoader {
 
-  // Charge application.conf depuis resources
-  private val config: Config = ConfigFactory.load()
-
   // 🔹 Spark
-  val appName: String = config.getString("spark.app-name")
-  val master: String = config.getString("spark.master")
-  println(appName)
-  println(master)
+  val appName: String = sys.env.getOrElse("SPARK_APP_NAME", "Epidemic Big Data Pipeline")
+  val master: String  = sys.env.getOrElse("SPARK_MASTER", "local[*]")
+ 
   // 🔹 API Epidemic
-  val epidemicApiUrl: String = config.getString("epidemic.api.url")
+  val epidemicApiUrl: String = sys.env.getOrElse(
+    "EPIDEMIC_API_URL",
+    "https://disease.sh/v3/covid-19/countries"
+  )
+  val apiRetries: Int = sys.env.getOrElse("EPIDEMIC_API_RETRIES", "3").toInt
+  val apiTimeout: Int = sys.env.getOrElse("EPIDEMIC_API_TIMEOUT", "10000").toInt
 
-  // 🔹 PostgreSQL
-  val postgresUrl: String = config.getString("postgres.url")
-  val postgresUser: String = config.getString("postgres.user")
-  val postgresPassword: String =  config.getString("postgres.password")
+  // 🔹 PostgreSQL 
+  val postgresUrl: String      = sys.env.getOrElse(
+    "POSTGRES_URL",
+    "jdbc:postgresql://localhost:5432/epidemic_db?currentSchema=public&ssl=false"
+  )
+  val postgresTable: String    = sys.env.getOrElse("POSTGRES_TABLE", "epidemic_cases")
+  val postgresUser: String     = sys.env.getOrElse("POSTGRES_USER", "postgres")
+  val postgresPassword: String = sys.env.getOrElse("POSTGRES_PASSWORD", "postgres")
   
    // 🔹 MySQL
-  val mysqlUrl: String      = config.getString("mysql.url")
-  val mysqlTable: String    = config.getString("mysql.table")
-  val mysqlUser: String     = config.getString("mysql.user")
-  val mysqlPassword: String = config.getString("mysql.password")
+  val mysqlUrl: String      = sys.env.getOrElse(
+    "MYSQL_URL",
+    "jdbc:mysql://localhost:3306/epidemic_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+  )
+  val mysqlTable: String    = sys.env.getOrElse("MYSQL_TABLE", "epidemic_cases")
+  val mysqlUser: String     = sys.env.getOrElse("MYSQL_USER", "root")
+  val mysqlPassword: String = sys.env.getOrElse("MYSQL_PASSWORD", "root")
 }

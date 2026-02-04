@@ -32,5 +32,5 @@ object ConfigLoader {
   )
   val mysqlTable: String    = sys.env.getOrElse("MYSQL_TABLE", "epidemic_cases")
   val mysqlUser: String     = sys.env.getOrElse("MYSQL_USER", "root")
-  val mysqlPassword: String = sys.env.getOrElse("MYSQL_PASSWORD", "root")
+  val mysqlPassword: String = sys.env.getOrElse("MYSQL_PASSWORD", "Pa$$w0rd")
 }

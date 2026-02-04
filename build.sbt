@@ -13,6 +13,8 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "org.postgresql" % "postgresql" % "42.7.3",
+  "com.mysql" % "mysql-connector-j" % "9.6.0", // Use the latest version
   "com.typesafe" % "config" % "1.4.3",
   "org.apache.logging.log4j" % "log4j-api" % "2.23.1",
   "org.apache.logging.log4j" % "log4j-core" % "2.23.1",

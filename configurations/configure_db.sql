@@ -14,6 +14,9 @@ CREATE TABLE epidemic_cases (
   recovered BIGINT,
   active BIGINT,
   critical BIGINT,
+  tests BIGINT, 
+  casesPerOneMillion BIGINT, 
+  deathsPerOneMillion BIGINT,
   PRIMARY KEY (country, updated)
 );
 

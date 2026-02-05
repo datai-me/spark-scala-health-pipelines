@@ -27,7 +27,7 @@ object EpidemicApiIngestion {
     // 3️⃣ Lecture JSON par Spark
     val rawDf = spark.read
       .option("multiLine", true)
-	  .option("inferSchema", true)
+	    .option("inferSchema", true)
       .json(jsonDS)	
 
     // Explosion du countryInfo + flatten
@@ -39,14 +39,13 @@ object EpidemicApiIngestion {
       col("continent"),
       col("population"),
       col("cases"),
-      col("tests"),
-      col("tests"),    
-      col("casesPerOneMillion"),
-      col("deathsPerOneMillion"),
       col("deaths"),      
       col("recovered"),
       col("active"),
-      col("critical")
+      col("critical"),
+      col("tests"),    
+      col("casesPerOneMillion"),
+      col("deathsPerOneMillion"),
     )
   }
 }

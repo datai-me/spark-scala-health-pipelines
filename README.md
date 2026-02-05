@@ -62,7 +62,7 @@ Silver Layer (Data Quality & Normalization)
         ↓
 Gold Layer (Analytics & Indicators)
         ↓
-Delta Lake Storage
+Database Storage
 ```
 
 ### Layers description
@@ -77,7 +77,7 @@ Delta Lake Storage
 
 * **Language**: Scala 2.3.18
 * **Processing**: Apache Spark 3.5.8
-* **Storage**: Delta Lake
+* **Database**: MySQL 8
 * **Ingestion**: REST API (HTTP)
 * **Build Tool**: sbt
 * **Data Architecture**: Bronze / Silver / Gold
@@ -134,8 +134,8 @@ epidemic-spark-pipeline/
 ### Prerequisites
 
 * Java 17.0.2
-* Apache Spark 4.1.1
-* sbt
+* Apache Spark 3.5.x
+* sbt 2.13
 
 ### Run the pipeline
 
@@ -172,7 +172,7 @@ The pipeline will:
 
 ## 👤 Author
 
-**RANOELISON Dimbisoa Adrianno**
+**RANOELISON Dimbisoa Patrick**
 Senior Data Engineer | Big Data | AI | Health Data
 
 ---

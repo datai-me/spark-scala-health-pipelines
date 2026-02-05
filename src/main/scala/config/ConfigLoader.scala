@@ -1,13 +1,11 @@
 package config
 
-import com.typesafe.config.{Config, ConfigFactory}
-
 object ConfigLoader {
 
   // 🔹 Spark
-  val appName: String = sys.env.getOrElse("SPARK_APP_NAME", "Epidemic Big Data Pipeline")
-  val master: String  = sys.env.getOrElse("SPARK_MASTER", "local[*]")
- 
+  val appName = sys.env.getOrElse("SPARK_APP_NAME", "Epidemic Pipeline")
+  val master  = sys.env.getOrElse("SPARK_MASTER", "local[*]")
+  
   // 🔹 API Epidemic
   val epidemicApiUrl: String = sys.env.getOrElse(
     "EPIDEMIC_API_URL",
@@ -19,8 +17,9 @@ object ConfigLoader {
   // =========================
   // 🔹DATABASE CONFIG
   // =========================
-  val dbType: String = sys.env.getOrElse("DB_TYPE", "mysql") // mysql ou postgres
 
+  val dbType: String = sys.env.getOrElse("DB_TYPE", "mysql") // mysql ou postgres
+  
   val dbUrl: String = sys.env.getOrElse(
     "DB_URL",
     if(dbType == "mysql") 
@@ -28,6 +27,7 @@ object ConfigLoader {
     else
       "jdbc:postgresql://localhost:5432/epidemic_db?currentSchema=public&ssl=false"
   )
+
   val dbUser: String = sys.env.getOrElse(
     "DB_USER",
     if(dbType == "mysql") "root" else "postgres"
@@ -38,5 +38,12 @@ object ConfigLoader {
     if(dbType == "mysql") "Pa$$w0rd" else "postgres"
   )
   
-   val dbTable: String = sys.env.getOrElse("DB_TABLE", "epidemic_cases")
+  val dbTable: String = sys.env.getOrElse("DB_TABLE", "epidemic_cases")
+  
+  // JDBC générique (MySQL ou PostgreSQL)
+  val jdbcUrl      = sys.env.getOrElse("JDBC_URL","jdbc:mysql://localhost:3306/epidemic_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true")
+  val jdbcUser     = sys.env.getOrElse("JDBC_USER","root")
+  val jdbcPassword = sys.env.getOrElse("JDBC_PASSWORD","Pa$$w0rd")
+  val jdbcTable    = sys.env.getOrElse("JDBC_TABLE", "epidemic_cases")
+  val jdbcDriver   = sys.env.getOrElse("JDBC_DRIVER","com.mysql.cj.jdbc.Driver")
 }

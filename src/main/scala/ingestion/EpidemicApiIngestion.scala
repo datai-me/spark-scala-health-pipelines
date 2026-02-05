@@ -1,36 +1,45 @@
-// -------------------------------------------------------------
-// FICHIER : ingestion/EpidemicApiIngestion.scala
-// RÔLE    : Ingestion des données depuis une API REST publique
-// LAYER   : BRONZE (données brutes)
-// -------------------------------------------------------------
 package ingestion
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.functions._
 import scala.io.Source
 import java.net.URL
+import config.ConfigLoader
 
 object EpidemicApiIngestion {
 
   /**
-   * API publique mondiale (ex : COVID-19)
-   * Source fiable utilisée par chercheurs et médias
+   * Lecture API REST épidémique
    */
-  val apiUrl = "https://disease.sh/v3/covid-19/countries"
+  def readApi(spark: SparkSession): DataFrame = {
+	
+	// 1️⃣ Appel HTTP
+    val rawJson: String =
+      Source.fromURL(new URL(ConfigLoader.epidemicApiUrl)).mkString
 
-  /**
-   * Appelle l'API REST, récupère le JSON
-   * et le convertit en DataFrame Spark
-   */
-  def ingest(spark: SparkSession): DataFrame = {
+    // 2️⃣ Conversion String → Dataset[String]
     import spark.implicits._
+    val jsonDS = Seq(rawJson).toDS()
 
-    // Appel HTTP simple (GET)
-    val rawJson = Source.fromURL(new URL(apiUrl)).mkString
+    // 3️⃣ Lecture JSON par Spark
+    val rawDf = spark.read
+      .option("multiLine", true)
+	  .option("inferSchema", true)
+      .json(jsonDS)	
 
-    // Conversion en Dataset[String] pour lecture Spark
-    val jsonDS = spark.createDataset(Seq(rawJson))
-
-    // Lecture JSON → DataFrame structuré
-    spark.read.json(jsonDS)
+    // Explosion du countryInfo + flatten
+    rawDf.select(
+      col("updated"),
+      col("country"),
+      col("countryInfo.iso2").as("iso2"),
+      col("countryInfo.iso3").as("iso3"),
+      col("continent"),
+      col("population"),
+      col("cases"),      
+      col("deaths"),      
+      col("recovered"),
+      col("active"),
+      col("critical")
+    )
   }
 }

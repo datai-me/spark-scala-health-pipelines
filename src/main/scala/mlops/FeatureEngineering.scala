@@ -12,8 +12,8 @@ object FeatureEngineering {
       "cases",
       "active",
       "critical",
-      "tests",
       "population",
+      "tests",      
       "casesPerOneMillion",
       "deathsPerOneMillion"
     )

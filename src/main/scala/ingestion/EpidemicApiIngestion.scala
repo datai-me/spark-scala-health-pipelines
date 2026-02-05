@@ -15,10 +15,10 @@ object EpidemicApiIngestion {
   def readApi(spark: SparkSession): DataFrame = {
 	
 	// 1️⃣ Appel HTTP
-    val rawJson: String =
-      Source.fromURL(new URL(ConfigLoader.epidemicApiUrl)).mkString
+    /*val rawJson: String =
+      Source.fromURL(new URL(ConfigLoader.epidemicApiUrl)).mkString */
 	
-	val draftJson = EpidemicApiService.fetchEpidemicJson()
+	val rawJson = EpidemicApiService.fetchEpidemicJson()
 
     // 2️⃣ Conversion String → Dataset[String]
     import spark.implicits._

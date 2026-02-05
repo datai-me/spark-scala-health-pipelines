@@ -20,6 +20,7 @@ libraryDependencies ++= Seq(
   "org.apache.logging.log4j" % "log4j-core" % "2.23.1",
   "org.apache.spark" %% "spark-sql" % "3.5.8",
   "org.apache.spark" %% "spark-core" % "3.5.8",
+  "org.apache.spark" %% "spark-mllib" % "3.5.8",
   "com.lihaoyi" %% "requests" % "0.8.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.3",
   "io.delta" %% "delta-spark" % "3.1.0",

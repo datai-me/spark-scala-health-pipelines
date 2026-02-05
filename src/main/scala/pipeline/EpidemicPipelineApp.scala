@@ -17,7 +17,7 @@ object EpidemicPipelineApp {
 
     // Affichage console Spark SQL
     df.createOrReplaceTempView("epidemic")
-    spark.sql("SELECT country, cases, deaths FROM epidemic").show(20, false)
+    spark.sql("SELECT country, cases, active, critical, tests, population,casesPerOneMillion, deathsPerOneMillion, deaths FROM epidemic").show(20, false)
 
     // Écriture JDBC
     df.write

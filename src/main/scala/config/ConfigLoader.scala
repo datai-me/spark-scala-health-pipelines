@@ -10,9 +10,10 @@ object ConfigLoader {
   val epidemicApiUrl: String = sys.env.getOrElse(
     "EPIDEMIC_API_URL",
     "https://disease.sh/v3/covid-19/countries"
-  )
-  val apiRetries: Int = sys.env.getOrElse("EPIDEMIC_API_RETRIES", "3").toInt
-  val apiTimeout: Int = sys.env.getOrElse("EPIDEMIC_API_TIMEOUT", "10000").toInt
+  )  
+  
+  val apiMaxRetries: Int = sys.env.getOrElse("API_MAX_RETRIES", "3").toInt
+  val apiInitialBackoffMs: Int = sys.env.getOrElse("API_INITIAL_BACKOFF_MS", "10000").toInt
 
   // =========================
   // 🔹DATABASE CONFIG

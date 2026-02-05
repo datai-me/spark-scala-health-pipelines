@@ -1,8 +1,8 @@
 package service
 
-import pipeline.config.ConfigLoader
-import pipeline.util.Logging
-import api.ApiClient
+import config.ConfigLoader
+import utils.Logging
+import ingestion.ApiClient
 
 import scala.util.{Try, Success, Failure}
 import scala.concurrent.duration._

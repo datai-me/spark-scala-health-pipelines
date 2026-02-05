@@ -5,6 +5,9 @@ import java.net.URL
 
 object ApiClient {
 
+  def get(url: String): String =
+    Source.fromURL(new URL(url)).mkString
+
   def fetchWithRetry(
       url: String,
       maxRetries: Int,
@@ -17,12 +20,12 @@ object ApiClient {
 
     while (attempt < maxRetries) {
       try {
-        return Source.fromURL(new URL(url)).mkString
+        return get(url)
       } catch {
         case e: Throwable =>
           lastError = e
           Thread.sleep(delay)
-          delay = delay * 2 // backoff exponentiel
+          delay = delay * 2
           attempt += 1
       }
     }

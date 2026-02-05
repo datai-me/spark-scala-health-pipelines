@@ -5,6 +5,7 @@ import org.apache.spark.sql.functions._
 import scala.io.Source
 import java.net.URL
 import config.ConfigLoader
+import service.EpidemicApiService
 
 object EpidemicApiIngestion {
 
@@ -16,6 +17,8 @@ object EpidemicApiIngestion {
 	// 1️⃣ Appel HTTP
     val rawJson: String =
       Source.fromURL(new URL(ConfigLoader.epidemicApiUrl)).mkString
+	
+	val draftJson = EpidemicApiService.fetchEpidemicJson()
 
     // 2️⃣ Conversion String → Dataset[String]
     import spark.implicits._

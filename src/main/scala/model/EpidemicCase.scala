@@ -18,5 +18,9 @@ case class EpidemicCase(
   todayDeaths: Long,
   recovered: Long,
   active: Long,
-  critical: Long
+  critical: Long,
+
+  tests: Long,     
+  casesPerOneMillion: Long,
+  deathsPerOneMillion: Long
 )

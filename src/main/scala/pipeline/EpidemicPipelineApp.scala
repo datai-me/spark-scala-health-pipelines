@@ -8,6 +8,7 @@ package pipeline
 import org.apache.spark.sql.SparkSession
 import ingestion.EpidemicApiIngestion
 import config.ConfigLoader
+import storage.DataWriter
 
 object EpidemicPipelineApp {
 
@@ -18,16 +19,16 @@ object EpidemicPipelineApp {
     // Affichage console Spark SQL
     df.createOrReplaceTempView("epidemic")
     spark.sql("SELECT country, cases, active, critical, population, deaths, tests, casesPerOneMillion, deathsPerOneMillion FROM epidemic").show(20, false)
+	
+    // 🚀 UN SEUL APPEL
+    val (model, predictions) = MlPipeline.run(df)
 
+    predictions.select("label", "prediction").show(10, false)
+
+    // Sauvegarde modèle (MLOps)
+    model.write.overwrite().save("/models/covid_rf")
+	
     // Écriture JDBC
-    df.write
-      .format("jdbc")
-      .option("url", ConfigLoader.jdbcUrl)
-      .option("dbtable", ConfigLoader.jdbcTable)
-      .option("user", ConfigLoader.jdbcUser)
-      .option("password", ConfigLoader.jdbcPassword)
-      .option("driver", ConfigLoader.jdbcDriver)
-      .mode("append")
-      .save()
+    // DataWriter.writeToJdbc(df)
   } 
 }

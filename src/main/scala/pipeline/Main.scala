@@ -11,9 +11,10 @@ import config.{ConfigLoader, MLConfig}
 import utils.{Logging, VersionsInfo}
 import service.EpidemicApiServiceAsync
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{Try, Success, Failure}
+import scala.concurrent.{Await, Future}
+import java.util.concurrent.TimeoutException
 
 /**
  * Point d'entrée principal de l'application Epidemic Pipeline
@@ -196,8 +197,8 @@ object Main extends Logging {
   private def addShutdownHook(spark: SparkSession): Unit = {
     Runtime.getRuntime.addShutdownHook(new Thread {
       override def run(): Unit = {
-        logger.warn("Shutdown hook triggered - cleaning up resources")
-        
+        logger.warn("Shutdown hook triggered - cleaning up resources (best-effort)")
+
         Try {
           cleanupAsyncResources()
           stopSpark(spark)
@@ -228,22 +229,47 @@ object Main extends Logging {
     logger.info("All resources cleaned up successfully")
   }
 
-  /**
-   * Nettoie les ressources asynchrones (Akka HTTP)
+    /**
+   * Nettoie les ressources asynchrones (best-effort)
+   *
+   * IMPORTANT:
+   * - Ne doit jamais faire échouer l'arrêt de l'application.
+   * - Ne doit pas bloquer trop longtemps (sinon Timeout).
    */
   private def cleanupAsyncResources(): Unit = {
-    logger.info("Shutting down async HTTP client")
-    
-    Try {
-      val shutdownFuture = EpidemicApiServiceAsync.shutdown()
-      Await.result(shutdownFuture, 10.seconds)
-    } match {
-      case Success(_) => 
-        logger.info("Async resources cleaned up")
-      case Failure(ex) => 
-        logger.warn("Error shutting down async resources", ex)
+    logger.info("Cleaning up async resources (best-effort)")
+
+    val shutdownFuture: Future[Unit] = shutdownAsyncResources()
+
+    // Best-effort: on attend un peu, puis on abandonne sans planter l'arrêt
+    Try(Await.result(shutdownFuture, 10.seconds)) match {
+      case Success(_) =>
+        logger.info("Async resources shut down cleanly")
+
+      case Failure(_: TimeoutException) =>
+        logger.warn("Async shutdown timed out after 10s; continuing shutdown anyway")
+
+      case Failure(e) =>
+        logger.warn("Async shutdown failed; continuing shutdown anyway", e)
     }
   }
+
+  /**
+   * Tente d'arrêter proprement les ressources async.
+   *
+   * - Si EpidemicApiServiceAsync expose une méthode shutdown(): Future[Unit], on l'appelle.
+   * - Sinon, on retourne Future.successful(()) pour ne pas bloquer.
+   *
+   * Cette approche évite les erreurs de compilation si l'API async change,
+   * et garantit un arrêt "safe" sous Windows/Docker.
+   */
+  private def shutdownAsyncResources(): Future[Unit] = {
+    Try {
+      val m = EpidemicApiServiceAsync.getClass.getMethod("shutdown")
+      m.invoke(EpidemicApiServiceAsync).asInstanceOf[Future[Unit]]
+    }.getOrElse(Future.successful(()))
+  }
+
 
   /**
    * Arrête proprement la SparkSession

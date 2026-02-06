@@ -24,7 +24,11 @@ libraryDependencies ++= Seq(
   "com.lihaoyi" %% "requests" % "0.8.0",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.3",
   "io.delta" %% "delta-spark" % "3.1.0",
-  "org.apache.httpcomponents.client5" % "httpclient5" % "5.3.1"
+  "org.apache.httpcomponents.client5" % "httpclient5" % "5.3.1",
+  "com.typesafe.akka" %% "akka-actor-typed" % "2.8.5",
+  "com.typesafe.akka" %% "akka-stream"      % "2.8.5",
+  "com.typesafe.akka" %% "akka-http"        % "10.5.3",
+  "org.scalatest" %% "scalatest" % "3.2.18" % Test
 )
 
 // Force la compatibilité Scala 2.13

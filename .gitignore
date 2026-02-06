@@ -6,6 +6,7 @@ __pycache__/
 .bsp
 .bloop
 .metals
+.db
 
 # C extensions
 *.so

@@ -7,6 +7,8 @@ scalaVersion := "2.13.18"
 
 fork := true
 
+Compile / mainClass := Some("pipeline.Main")
+
 // IMPORTANT : compatibilité avec libs Scala 2.13
 scalacOptions ++= Seq(
   "-language:implicitConversions"

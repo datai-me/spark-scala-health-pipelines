@@ -16,6 +16,8 @@ import mlops.{ExperimentTracking, ModelRegistry}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{Try, Success, Failure}
+import scala.concurrent.ExecutionContext
+import service.DataLakeExportService
 
 /**
  * Pipeline principal de traitement des données épidémiologiques
@@ -78,12 +80,23 @@ object EpidemicPipelineApp extends Logging {
       
       // Étape 6: Sauvegarde du modèle
       saveModel(model)
-      
+
       // Étape 7: (Optionnel) Sauvegarde en base de données
       if (saveToDatabase) {
         persistToDatabase(rawData)
-      }
-      
+      } 
+
+      // Étape 7: Écriture Data Lake (Parquet + CSV)
+      logger.info("[STEP] Data Lake export started")
+
+      writeToDataLake(
+        spark = spark,
+        df = rawData,
+        datasetName = "epidemic_countries"
+      )
+
+      logger.info("[STEP 8/8] Data Lake export finished")
+
       logger.info("="*60)
       logger.info("EPIDEMIC PIPELINE - COMPLETED SUCCESSFULLY")
       logger.info("="*60)
@@ -93,6 +106,8 @@ object EpidemicPipelineApp extends Logging {
         logger.error("Pipeline execution failed", ex)
         throw ex // Re-throw pour que Main puisse gérer
     }
+
+    
   }
 
   /**
@@ -104,7 +119,7 @@ object EpidemicPipelineApp extends Logging {
    * @return DataFrame contenant les données brutes
    */
   private def ingestData(spark: SparkSession): DataFrame = {
-    logger.info("[STEP 1/7] Data Ingestion - Fetching from API")
+    logger.info("[STEP 1/8] Data Ingestion - Fetching from API")
     
     timed("Data ingestion") {
       val df = EpidemicApiIngestion.readApi(spark)
@@ -136,7 +151,7 @@ object EpidemicPipelineApp extends Logging {
    * - Plage de valeurs cohérente
    */
   private def validateData(df: DataFrame): Unit = {
-    logger.info("[STEP 2/7] Data Validation")
+    logger.info("[STEP 2/8] Data Validation")
     
     // Vérification du nombre de lignes
     val rowCount = df.count()
@@ -199,7 +214,7 @@ object EpidemicPipelineApp extends Logging {
     spark: SparkSession, 
     df: DataFrame
   ): Unit = {
-    logger.info("[STEP 3/7] Descriptive Statistics")
+    logger.info("[STEP 3/8] Descriptive Statistics")
     
     // Création d'une vue temporaire pour requêtes SQL
     df.createOrReplaceTempView("epidemic")
@@ -255,7 +270,7 @@ object EpidemicPipelineApp extends Logging {
     df: DataFrame,
     enableCV: Boolean
   ): (PipelineModel, DataFrame) = {
-    logger.info(s"[STEP 4/7] ML Model Training (CV: ${if (enableCV) "enabled" else "disabled"})")
+    logger.info(s"[STEP 4/8] ML Model Training (CV: ${if (enableCV) "enabled" else "disabled"})")
     
     // Tracking de l'expérimentation (MLflow style)
     ExperimentTracking.logParam("model_type", "RandomForestRegressor")
@@ -278,7 +293,7 @@ object EpidemicPipelineApp extends Logging {
    * Montre un échantillon des prédictions pour vérification visuelle
    */
   private def displayPredictions(predictions: DataFrame): Unit = {
-    logger.info("[STEP 5/7] Model Predictions")
+    logger.info("[STEP 5/8] Model Predictions")
     
     logger.info("Sample predictions (actual vs predicted deaths):")
     predictions
@@ -306,7 +321,7 @@ object EpidemicPipelineApp extends Logging {
    * pour traçabilité complète
    */
   private def saveModel(model: PipelineModel): Unit = {
-    logger.info("[STEP 6/7] Model Persistence")
+    logger.info("[STEP 6/8] Model Persistence")
     
     val timestamp = System.currentTimeMillis()
     val version = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -343,7 +358,7 @@ object EpidemicPipelineApp extends Logging {
    * Sauvegarde les données brutes en JDBC pour analyse ultérieure
    */
   private def persistToDatabase(df: DataFrame): Unit = {
-    logger.info("[STEP 7/7] Database Persistence")
+    logger.info("[STEP 7/8] Database Persistence")
     
     timed("JDBC write") {
       Try {
@@ -359,6 +374,29 @@ object EpidemicPipelineApp extends Logging {
       }
     }
   }
+
+  /**
+  * Étape 8: Écrit un DataFrame Spark dans le Data Lake (Parquet + CSV analyst).
+  *
+  * Centralise l'appel au service d'export pour garder run() lisible.
+  */
+  private def writeToDataLake(
+    spark: SparkSession,
+    df: DataFrame,
+    datasetName: String
+  ): Unit = {
+
+    implicit val ec: ExecutionContext = ExecutionContext.global
+
+    DataLakeExportService.exportDataLake(
+      spark = spark,
+      df = df,
+      datasetName = datasetName,
+      awaitCompletion = true,   // ✅ sûr : on attend avant spark.stop()
+      timeout = 10.minutes
+    )
+  }
+
 
   /**
    * Log la configuration du pipeline

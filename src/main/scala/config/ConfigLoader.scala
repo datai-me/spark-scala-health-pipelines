@@ -47,4 +47,28 @@ object ConfigLoader {
   val jdbcPassword = sys.env.getOrElse("JDBC_PASSWORD","Pa$$w0rd")
   val jdbcTable    = sys.env.getOrElse("JDBC_TABLE", "epidemic_cases")
   val jdbcDriver   = sys.env.getOrElse("JDBC_DRIVER","com.mysql.cj.jdbc.Driver")
+
+  // =========================
+  // 🔹FILES CONFIG
+  // =========================
+
+  val dataLakeBasePath: String =
+    sys.env.getOrElse("DATA_LAKE_BASE_PATH", "file:///C:/data-lake/epidemic")
+
+  val dlFormatMain: String =
+    sys.env.getOrElse("DL_FORMAT_MAIN", "parquet") // parquet|orc|json
+
+  val dlFormatAnalyst: String =
+    sys.env.getOrElse("DL_FORMAT_ANALYST", "csv") // csv|parquet
+
+  val dlMode: String =
+    sys.env.getOrElse("DL_MODE", "overwrite") // overwrite|append
+
+  val dlPartitionCols: Seq[String] =
+    sys.env.getOrElse("DL_PARTITION_COLS", "")
+      .split(",").map(_.trim).filter(_.nonEmpty).toSeq
+
+  val dlCoalesceAnalyst: Int =
+    sys.env.getOrElse("DL_COALESCE_ANALYST", "1").toInt
+  
 }

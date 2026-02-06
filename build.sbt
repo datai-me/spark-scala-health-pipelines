@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor-typed" % "2.8.5",
   "com.typesafe.akka" %% "akka-stream"      % "2.8.5",
   "com.typesafe.akka" %% "akka-http"        % "10.5.3",
-  "org.scalatest" %% "scalatest" % "3.2.18" % Test
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test
 )
 
 // Force la compatibilité Scala 2.13

@@ -53,6 +53,13 @@ object Main extends Logging {
    *             --log-level DEBUG/INFO/WARN
    */
   def main(args: Array[String]): Unit = {
+    
+    // 🔥 Force le chargement de log4j2.xml
+    System.setProperty(
+      "log4j.configurationFile",
+      getClass.getClassLoader.getResource("log4j2.xml").toURI.toString
+    )
+    
     logger.info("=" * 60)
     logger.info("Starting Epidemic Big Data Pipeline")
     logger.info("=" * 60)
@@ -161,7 +168,7 @@ object Main extends Logging {
       .getOrCreate()
 
     // Réduire le niveau de log Spark (trop verbeux par défaut)
-    spark.sparkContext.setLogLevel("WARN")
+    spark.sparkContext.setLogLevel("WARN") // INFO SI ON VEUT VOIR TOUS LES LOGS.
 
     logger.info(s"Spark session initialized - Version: ${spark.version}")
     logger.info(s"Master: ${spark.sparkContext.master}")
